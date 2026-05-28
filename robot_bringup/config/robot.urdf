@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<!--
+  robot.urdf — 2WD differential drive robot description
+  -------------------------------------------------------
+  Defines the robot's geometry and coordinate frames.
+  robot_state_publisher reads this and publishes all fixed TF transforms.
+
+  Frames:
+    odom            → published by EKF (robot_localization)
+    base_footprint  → origin on ground, below base_link
+    base_link       → centre of robot body
+    left_wheel      → left wheel joint
+    right_wheel     → right wheel joint
+    imu_link        → MPU6050 mounting point
+
+  Adjust the physical dimensions to match your actual chassis.
+-->
+<robot name="tierbee_robot">
+
+  <!-- ── base_footprint: ground projection of the robot origin ─────────────
+       This is the standard ROS convention for wheeled robots.
+       The EKF publishes: odom → base_footprint
+  -->
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child  link="base_link"/>
+    <!-- base_link is 20mm above the ground (chassis plate thickness) -->
+    <origin xyz="0 0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ── base_link: centre of the robot chassis ────────────────────────────
+       Adjust xyz size to your actual chassis plate dimensions.
+       150mm long × 130mm wide × 30mm tall (estimate — measure yours)
+  -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.150 0.130 0.030"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.2 0.4 0.8 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.150 0.130 0.030"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+               iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- ── Left wheel ──────────────────────────────────────────────────────── -->
+  <!-- Wheel centre is at y = +wheel_separation/2 = +0.112m from robot centre -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="left_wheel"/>
+    <origin xyz="0.0 0.112 -0.02" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="left_wheel">
+    <visual>
+      <!-- Wheel rotated 90° so cylinder axis aligns with Y-axis joint -->
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <!-- diameter=0.065m → radius=0.0325m, width=0.026m -->
+        <cylinder radius="0.0325" length="0.026"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.0325" length="0.026"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0"
+               iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- ── Right wheel ─────────────────────────────────────────────────────── -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="right_wheel"/>
+    <origin xyz="0.0 -0.112 -0.02" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="right_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.0325" length="0.026"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.0325" length="0.026"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0"
+               iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- ── Caster wheel (passive, rear) ────────────────────────────────────── -->
+  <joint name="caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="caster_wheel"/>
+    <!-- Positioned at rear of chassis -->
+    <origin xyz="-0.060 0.0 -0.032" rpy="0 0 0"/>
+  </joint>
+
+  <link name="caster_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <!-- 19mm Pololu ball caster → radius ~0.0095m -->
+        <sphere radius="0.0095"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0095"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0"
+               iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <!-- ── IMU link (MPU6050 on RPi4) ─────────────────────────────────────── -->
+  <!-- Adjust xyz to match where the MPU6050 is physically mounted on your robot -->
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="imu_link"/>
+    <origin xyz="0.0 0.0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <link name="imu_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.020 0.016 0.002"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0.2 0.8 0.2 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+</robot>

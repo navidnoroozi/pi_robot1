@@ -1,0 +1,97 @@
+# ekf.yaml — robot_localization EKF configuration
+# ──────────────────────────────────────────────────
+# Fuses wheel odometry (/odom/unfiltered) with IMU (/imu/data)
+# to produce a filtered odometry estimate on /odom.
+#
+# Reference: http://docs.ros.org/en/melodic/api/robot_localization/html/configuring_robot_localization.html
+# State vector: [x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az]
+#               [ 0, 1, 2,    3,     4,   5,  6,  7,  8,     9,     10,   11, 12, 13, 14]
+
+ekf_filter_node:
+  ros__parameters:
+
+    # Publish rate of the filtered odometry
+    frequency: 50.0
+
+    # Two sensor sources
+    odom0: /odom/unfiltered
+    imu0:  /imu/data
+
+    # Whether to publish the odom → base_footprint transform
+    # Set to false — serial_bridge_node already publishes this TF
+    publish_tf: false
+
+    # Frame IDs
+    world_frame:  odom
+    odom_frame:   odom
+    base_link_frame: base_footprint
+    map_frame:    map
+
+    # ── Odometry measurement configuration ──────────────────────────────────
+    # Which states to use from odom0.
+    # Format: [x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az]
+    # For a 2D differential drive robot:
+    #   - Use x velocity (vx) and yaw rate (vyaw) from odometry
+    #   - These are in the robot's body frame (child_frame_id = base_footprint)
+    odom0_config: [false, false, false,    # x, y, z position
+                   false, false, false,    # roll, pitch, yaw
+                   true,  true, false,    # vx, vy, vz
+                   false, false, true,     # vroll, vpitch, vyaw
+                   false, false, false]    # ax, ay, az
+
+    # Relative to child frame (base_footprint) or world frame (odom)?
+    odom0_relative:         false
+    odom0_queue_size:       10
+    odom0_nodelay:          false
+    odom0_differential:     false  # false = use absolute values where possible
+
+    # ── IMU measurement configuration ───────────────────────────────────────
+    # Use yaw rate (gyro Z) and linear accelerations from IMU
+    # orientation_covariance[0] = -1 means orientation not provided by mpu6050_node
+    imu0_config: [false, false, false,    # x, y, z position (not from IMU)
+                  false, false, false,    # roll, pitch, yaw (not reliable without mag)
+                  false, false, false,    # vx, vy, vz (not from IMU)
+                  false,  false,  true,     # vroll, vpitch, vyaw (gyro — use all 3)
+                  true,  true,  false]    # ax, ay, az (use x, y accel; not z)
+
+    imu0_relative:             false
+    imu0_queue_size:           10
+    imu0_nodelay:              false
+    imu0_differential:         false
+    imu0_remove_gravitational_acceleration: false  # subtract ~9.8 m/s² from az
+
+    # ── Process noise covariance ─────────────────────────────────────────────
+    # Diagonal Q matrix: uncertainty added per step to each state.
+    # Larger = trust measurements more; smaller = trust model more.
+    process_noise_covariance: [0.05, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.05, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.06, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.03, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.03, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.06, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.025,0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.025,0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.04, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.01, 0.0,  0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.01, 0.0,  0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.02, 0.0,  0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.01, 0.0,  0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.01, 0.0,
+                               0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.015]
+
+    # ── Initial estimate covariance ──────────────────────────────────────────
+    initial_estimate_covariance: [1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,  0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9, 0.0,
+                                  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1e-9]
