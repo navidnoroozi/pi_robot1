@@ -4,7 +4,7 @@
   <name>robot_bringup</name>
   <version>1.0.0</version>
   <description>Approach 1 — custom serial bridge for 2WD differential drive robot</description>
-  <maintainer email="navid@example.com">Navid</maintainer>
+  <maintainer email="navidnoroozi@gmail.com">Navid Noroozi</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_python</buildtool_depend>

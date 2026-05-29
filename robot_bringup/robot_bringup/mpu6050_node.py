@@ -71,6 +71,8 @@ class MPU6050Node(Node):
             raise
 
         # ── Initialise MPU6050 ───────────────────────────────────────────────
+        self.get_logger().info('Initialising MPU6050...')
+        self.gyro_z_bias = 0.0   # will be set during init
         self._init_mpu6050()
 
         # ── Publisher (BEST_EFFORT matches EKF subscription) ─────────────────
@@ -103,6 +105,20 @@ class MPU6050Node(Node):
 
         # Accelerometer: ±2g (ACCEL_CONFIG = 0x00)
         self.bus.write_byte_data(self.addr, ACCEL_CONFIG, 0x00)
+
+        # ── Gyro bias calibration ─────────────────────────────────────────
+        # Collect 100 samples while stationary to measure Z-axis bias
+        self.get_logger().info('Calibrating gyro bias — keep robot stationary...')
+        import time
+        gz_samples = []
+        for _ in range(100):
+            _, _, _, gx_r, gy_r, gz_r = self._read_all()
+            gz_samples.append(gz_r / GYRO_SCALE)  # deg/s
+            time.sleep(0.01)
+        self.gyro_z_bias = math.radians(sum(gz_samples) / len(gz_samples))
+        self.get_logger().info(
+            f'Gyro Z bias: {self.gyro_z_bias:.5f} rad/s '
+            f'({math.degrees(self.gyro_z_bias):.3f} deg/s) — will be subtracted')
 
         self.get_logger().info('MPU6050 initialised: ±2g accel, ±250°/s gyro')
 
@@ -164,10 +180,10 @@ class MPU6050Node(Node):
         # Set covariance[0] = -1 to indicate orientation is not provided
         msg.orientation_covariance[0] = -1.0
 
-        # Angular velocity [rad/s]
+        # Angular velocity [rad/s] — subtract calibrated bias from Z axis
         msg.angular_velocity.x = gx
         msg.angular_velocity.y = gy
-        msg.angular_velocity.z = gz
+        msg.angular_velocity.z = gz - self.gyro_z_bias  # Subtract Z bias
         msg.angular_velocity_covariance[0] = 0.001
         msg.angular_velocity_covariance[4] = 0.001
         msg.angular_velocity_covariance[8] = 0.001

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
   robot.urdf — 2WD differential drive robot description
-  -------------------------------------------------------
+  (2WD differential drive robot description)
   Defines the robot's geometry and coordinate frames.
   robot_state_publisher reads this and publishes all fixed TF transforms.
 
@@ -26,19 +26,19 @@
   <joint name="base_joint" type="fixed">
     <parent link="base_footprint"/>
     <child  link="base_link"/>
-    <!-- base_link is 20mm above the ground (chassis plate thickness) -->
-    <origin xyz="0 0 0.02" rpy="0 0 0"/>
+    <!-- base_link is 50mm above the ground (chassis plate thickness) -->
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
   </joint>
 
   <!-- ── base_link: centre of the robot chassis ────────────────────────────
        Adjust xyz size to your actual chassis plate dimensions.
-       150mm long × 130mm wide × 30mm tall (estimate — measure yours)
+       200mm long × 130mm wide × 50mm tall (estimate — measure yours)
   -->
   <link name="base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="0.150 0.130 0.030"/>
+        <box size="0.200 0.130 0.05"/>
       </geometry>
       <material name="blue">
         <color rgba="0.2 0.4 0.8 1.0"/>
@@ -47,7 +47,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <box size="0.150 0.130 0.030"/>
+        <box size="0.200 0.130 0.05"/>
       </geometry>
     </collision>
     <inertial>
@@ -62,7 +62,7 @@
   <joint name="left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="left_wheel"/>
-    <origin xyz="0.0 0.112 -0.02" rpy="0 0 0"/>
+    <origin xyz="0.0 0.112 -0.019" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
@@ -95,7 +95,7 @@
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="right_wheel"/>
-    <origin xyz="0.0 -0.112 -0.02" rpy="0 0 0"/>
+    <origin xyz="0.0 -0.112 -0.019" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
@@ -122,20 +122,20 @@
     </inertial>
   </link>
 
-  <!-- ── Caster wheel (passive, rear) ────────────────────────────────────── -->
+  <!-- ── Caster wheel (passive, front) ────────────────────────────────────── -->
   <joint name="caster_joint" type="fixed">
     <parent link="base_link"/>
     <child  link="caster_wheel"/>
-    <!-- Positioned at rear of chassis -->
-    <origin xyz="-0.060 0.0 -0.032" rpy="0 0 0"/>
+    <!-- Positioned at front of chassis -->
+    <origin xyz="0.016 0.0 -0.037" rpy="0 0 0"/>
   </joint>
 
   <link name="caster_wheel">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <!-- 19mm Pololu ball caster → radius ~0.0095m -->
-        <sphere radius="0.0095"/>
+        <!-- 15mm ball caster → radius ~0.015m -->
+        <sphere radius="0.015"/>
       </geometry>
       <material name="grey">
         <color rgba="0.5 0.5 0.5 1.0"/>
@@ -144,7 +144,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="0.0095"/>
+        <sphere radius="0.015"/>
       </geometry>
     </collision>
     <inertial>
@@ -159,7 +159,7 @@
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child  link="imu_link"/>
-    <origin xyz="0.0 0.0 0.02" rpy="0 0 0"/>
+    <origin xyz="0.16 0.0 0.06" rpy="0 0 0"/>
   </joint>
 
   <link name="imu_link">
