@@ -29,7 +29,7 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
-
+from std_msgs.msg import Empty
 
 # ── Path definition ───────────────────────────────────────────────────────────
 # Rectangle in the odom frame, starting at origin facing +X.
@@ -206,18 +206,29 @@ class PathFollowerNode(Node):
 
     # ── Local mode: wait for Enter key ──────────────────────────────────────
     def _wait_for_keypress(self):
-        def _wait():
-            print('\n' + '='*55)
-            print('  PATH FOLLOWER — Test 1 (local)')
-            print('  Path: rectangle 1.4m × 0.9m')
-            print('  Make sure robot is on the floor with clear space.')
-            print('='*55)
-            input('  Press ENTER to start the robot...\n')
+        """
+        Instead of stdin (which has buffering issues),
+        wait for a message on /path_start topic.
+        Start the robot by running in another terminal:
+            ros2 topic pub /path_start std_msgs/msg/Empty {} --once
+        """
+        # from std_msgs.msg import Empty
+        self.get_logger().info(
+            '\n' + '='*55 +
+            '\n  PATH FOLLOWER — Test 1 (local)' +
+            '\n  Path: rectangle 1.4m × 0.9m' +
+            '\n  Place robot at start position facing forward.' +
+            '\n  Then in another terminal run:' +
+            '\n    ros2 topic pub /path_start std_msgs/msg/Empty {} --once' +
+            '\n' + '='*55)
+
+        self.start_sub = self.create_subscription(
+            Empty, '/path_start', self._start_callback, 10)
+
+    def _start_callback(self, msg):
+        if not self.started:
             self.started = True
             self.get_logger().info('START received — beginning path')
-
-        t = threading.Thread(target=_wait, daemon=True)
-        t.start()
 
     # ── ZMQ mode: listen for start command from VM ──────────────────────────
     def _start_zmq_listener(self, port: int):
