@@ -16,8 +16,8 @@ from rosidl_runtime_py.utilities import get_message
 # ============================================================
 # Configuration
 # ============================================================
-bag_path = pathlib.Path("/tmp/robot_run")
-output_dir = pathlib.Path.home() / "bag_plots"
+bag_path = pathlib.Path("/home/pi/robot_ws/src/robot_bringup/bags/robot_run")
+output_dir = pathlib.Path.home() / "robot_ws/src/robot_bringup/artifacts/bag_plots"
 output_dir.mkdir(exist_ok=True)
 
 selected_topics = [
@@ -257,7 +257,7 @@ if cmd_t:
     plt.plot(cmd_t, cmd_lin_x, label="linear.x [m/s]")
     plt.plot(cmd_t, cmd_ang_z, label="angular.z [rad/s]")
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/cmd_vel_timeseries.png",
+        "cmd_vel_timeseries.png",
         "/cmd_vel over time",
         "time [s]",
         "value"
@@ -269,7 +269,7 @@ if odom_t:
     plt.plot(odom_x, odom_y, label="/odom trajectory")
     plt.axis("equal")
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/odom_xy.png",
+        "odom_xy.png",
         "/odom trajectory",
         "x position [m]",
         "y position [m]"
@@ -281,7 +281,7 @@ if odom_t:
     plt.plot(odom_t, odom_yaw, label="yaw [rad]")
     plt.plot(odom_t, odom_speed, label="speed [m/s]")
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/odom_timeseries.png",
+        "odom_timeseries.png",
         "/odom states over time",
         "time [s]",
         "value"
@@ -293,7 +293,7 @@ if odom_u_t:
     plt.plot(odom_u_x, odom_u_y, label="/odom/unfiltered trajectory")
     plt.axis("equal")
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/odom_unfiltered_xy.png",
+        "odom_unfiltered_xy.png",
         "/odom/unfiltered trajectory",
         "x position [m]",
         "y position [m]"
@@ -305,7 +305,7 @@ if odom_u_t:
     plt.plot(odom_u_t, odom_u_yaw, label="yaw [rad]")
     plt.plot(odom_u_t, odom_u_speed, label="speed [m/s]")
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/odom_unfiltered_timeseries.png",
+        "odom_unfiltered_timeseries.png",
         "/odom/unfiltered states over time",
         "time [s]",
         "value"
@@ -318,7 +318,7 @@ if imu_t:
     plt.plot(imu_t, imu_ay, label="accel.y [m/s^2]")
     plt.plot(imu_t, imu_az, label="accel.z [m/s^2]")
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/imu_linear_acceleration.png",
+        "imu_linear_acceleration.png",
         "/imu/data linear acceleration",
         "time [s]",
         "acceleration [m/s^2]"
@@ -329,7 +329,7 @@ if imu_t:
     plt.plot(imu_t, imu_gy, label="gyro.y [rad/s]")
     plt.plot(imu_t, imu_gz, label="gyro.z [rad/s]")
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/imu_angular_velocity.png",
+        "imu_angular_velocity.png",
         "/imu/data angular velocity",
         "time [s]",
         "angular velocity [rad/s]"
@@ -341,7 +341,7 @@ if diag_t:
     plt.plot(diag_t, diag_level, "o", label="diagnostic level")
     plt.yticks([0, 1, 2, 3], ["OK", "WARN", "ERROR", "STALE"])
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/diagnostics_levels_over_time.png",
+        "diagnostics_levels_over_time.png",
         "/diagnostics levels over time",
         "time [s]",
         "diagnostic level"
@@ -352,7 +352,7 @@ if diag_t:
     plt.bar(list(diag_counts.keys()), list(diag_counts.values()), label="count")
     plt.xticks(rotation=45, ha="right")
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/diagnostics_status_counts.png",
+        "diagnostics_status_counts.png",
         "/diagnostics status counts",
         "status name",
         "count"
@@ -367,7 +367,7 @@ if rosout_t:
         ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
     )
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/rosout_levels_over_time.png",
+        "rosout_levels_over_time.png",
         "/rosout levels over time",
         "time [s]",
         "log level"
@@ -377,7 +377,7 @@ if rosout_t:
     plt.figure()
     plt.bar(list(rosout_counts.keys()), list(rosout_counts.values()), label="count")
     save_plot(
-        "~/robot_ws/src/robot_bringup/artifacts/bag_plots/rosout_level_counts.png",
+        "rosout_level_counts.png",
         "/rosout level counts",
         "log level",
         "count"
