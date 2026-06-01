@@ -49,16 +49,15 @@ print(f'Average ticks for 1m: {(left_total+right_total)/2:.0f}')
 s.close()
 "
 ```
-**Step 3** — Push the robot exactly 1 metre forward by hand (along a taped straight line). Press Ctrl+C. The printed average is your true `COUNTS_PER_REV`.
+**Step 3** — Push the robot exactly 1 metre forward by hand (along a taped straight line). Press Ctrl+C. The printed average gives you the true `COUNTS_PER_REV` --> `COUNTS_PER_REV` = (`TICKS_PER_METER` × `WHEEL_CIRCUMFERENCE`) / `GEAR_RATIO`
 Update both files with the measured value:
 In `firmware.ino`:
 ```cpp
-#define COUNTS_PER_REV1  <measured_value>
-#define COUNTS_PER_REV2  <measured_value>
+#define COUNTS_PER_REV  <computed_value>  // Derived from calibration: 1001 ticks/m × π × 0.065 m/rev = 204 ticks/rev
 ```
 In `serial_bridge_node.py`:
 ```python
-COUNTS_PER_REV = <measured_value>
+METRES_PER_TICK = 1.0 / COUNTS_PER_REV  # Derived from calibration: 1.0 / 1001.0
 ```
 Re-upload firmware and rebuild the package.
 

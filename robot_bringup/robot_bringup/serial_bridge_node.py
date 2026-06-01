@@ -34,14 +34,16 @@ from tf2_ros import TransformBroadcaster
 
 
 # ── Robot physical parameters ────────────────────────────────────────────────
-COUNTS_PER_REV    = 1001      # 11 CPR × 21.3 gear ratio × 4 quadrature = 937, but measured 1001 ticks/rev
+# COUNTS_PER_REV    = 1001      # 11 CPR × 21.3 gear ratio × 4 quadrature = 937, but measured 1001 ticks/rev
 WHEEL_DIAMETER    = 0.065    # metres (65 mm wheel)
 WHEEL_RADIUS      = WHEEL_DIAMETER / 2.0
 WHEEL_SEPARATION  = 0.170    # metres — centre to centre of wheels
 MOTOR_MAX_RPM     = 259      # 280 RPM × (11.4V / 12V)
 
-# Derived
-METRES_PER_TICK = (math.pi * WHEEL_DIAMETER) / COUNTS_PER_REV
+# METRES_PER_TICK comes directly from calibration (1m push test):
+# L=1009 ticks, R=992 ticks → average 1001 ticks per metre
+# Using this directly avoids confusion between ticks/rev and ticks/m
+METRES_PER_TICK = 1.0 / 1001.0
 
 
 class SerialBridgeNode(Node):
