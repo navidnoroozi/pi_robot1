@@ -37,7 +37,7 @@ from tf2_ros import TransformBroadcaster
 COUNTS_PER_REV    = 937      # 11 CPR × 21.3 gear ratio × 4 quadrature
 WHEEL_DIAMETER    = 0.065    # metres (65 mm wheel)
 WHEEL_RADIUS      = WHEEL_DIAMETER / 2.0
-WHEEL_SEPARATION  = 0.224    # metres — centre to centre of wheels
+WHEEL_SEPARATION  = 0.190    # metres — centre to centre of wheels
 MOTOR_MAX_RPM     = 259      # 280 RPM × (11.4V / 12V)
 
 # Derived

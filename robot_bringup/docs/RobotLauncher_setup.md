@@ -44,8 +44,7 @@ source install/setup.bash
 ## Launch robot bringup
 ```bash
 ros2 launch robot_bringup robot_bringup.launch.py \
-  serial_port:=/dev/ttyUSB0 \
-  baud_rate:=115200
+  serial_port:=/dev/ttyUSB0 baud_rate:=115200
 ```
 
 ## Terminal 2: topic checks and logs
@@ -81,8 +80,7 @@ source ~/.bashrc
 cd ~/robot_ws
 source install/setup.bash
 timeout 10s ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
-"{linear: {x: 0.1}, angular: {z: 0.0}}" \
---rate 10
+"{linear: {x: 0.1}, angular: {z: 0.0}}" --rate 10
 ```
 Then send a zero velocity command to stop the robot:
 ```bash

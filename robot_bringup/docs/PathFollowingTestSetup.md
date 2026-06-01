@@ -6,7 +6,7 @@ ros2 launch robot_bringup robot_bringup.launch.py \
 
 # Terminal 2 — path follower (waits for topic trigger)
 ```bash
-python3 ~/path_follower_node.py --mode local
+python3 ~/robot_ws/src/robot_bringup/tests/path_follower_node.py --mode local
 ```
 
 # Wait for: "✓ Odom stable — ready to start"
