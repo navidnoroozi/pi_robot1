@@ -43,8 +43,7 @@ source install/setup.bash
 ```
 ## Launch robot bringup
 ```bash
-ros2 launch robot_bringup robot_bringup.launch.py \
-  serial_port:=/dev/ttyUSB0 baud_rate:=115200
+ros2 launch robot_bringup robot_bringup.launch.py serial_port:=/dev/ttyUSB0 baud_rate:=115200
 ```
 
 ## Terminal 2: topic checks and logs
