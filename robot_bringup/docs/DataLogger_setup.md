@@ -23,10 +23,7 @@ rm -rf /tmp/robot_run   # assuming the old data are stored under /tmp/robot_run
 ```
 2. Record the important topics:
 ```bash
-ros2 bag record -o /tmp/robot_run \     # Choose your own output bag folder name/path instead of /tmp/robot_run.
-/cmd_vel \
-/odom \
-/odom/unfiltered \
+ros2 bag record -o ~/robot_ws/src/robot_bringup/bags/robot_run /cmd_vel /odom /odom/unfiltered \
 /imu/data \
 /diagnostics \
 /rosout \

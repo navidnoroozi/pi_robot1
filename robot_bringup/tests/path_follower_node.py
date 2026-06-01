@@ -33,7 +33,7 @@ Corrections applied vs original:
                      compatible.
 
 The path is a rectangle that fits in a 3 m × 2 m lab space:
-    (0,0) → (1.4,0) → (1.4,0.9) → (0,0.9) → (0,0)
+    (0,0) → (1.0,0) → (1.0,0.3) → (0,0.3) → (0,0)
     Total perimeter ≈ 4.6 m.
 
 State machine per waypoint:
@@ -56,9 +56,9 @@ from std_msgs.msg import Empty
 # ── Path definition ───────────────────────────────────────────────────────────
 # Rectangle in the odom frame, robot starts at origin facing +X.
 WAYPOINTS = [
-    (1.40, 0.00),   # leg 1: drive 1.4 m forward
-    (1.40, 0.90),   # leg 2: turn left, drive 0.9 m
-    (0.00, 0.90),   # leg 3: turn left, drive 1.4 m back
+    (1.00, 0.00),   # leg 1: drive 1.0 m forward
+    (1.00, 0.30),   # leg 2: turn left, drive 0.3 m
+    (0.00, 0.30),   # leg 3: turn left, drive 1.0 m back
     (0.00, 0.00),   # leg 4: turn left, return to origin
 ]
 
@@ -148,7 +148,7 @@ class PathFollowerNode(Node):
             self.get_logger().info(
                 '\n' + '='*60 +
                 '\n  PATH FOLLOWER — Test 1 (local)' +
-                '\n  Path: rectangle 1.4 m × 0.9 m' +
+                '\n  Path: rectangle 1.0 m × 0.3 m' +
                 '\n  1. Place robot at start position facing forward (+X).' +
                 f'\n  2. Wait for "odom stable" message (~{ODOM_STABLE_DELAY:.0f}s).' +
                 '\n  3. In another terminal run:' +
