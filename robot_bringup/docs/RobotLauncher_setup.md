@@ -78,8 +78,7 @@ So publish /cmd_vel for 10 seconds:
 source ~/.bashrc
 cd ~/robot_ws
 source install/setup.bash
-timeout 10s ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \
-"{linear: {x: 0.1}, angular: {z: 0.0}}" --rate 10
+timeout 10s ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.1}, angular: {z: 0.0}}" --rate 10
 ```
 Then send a zero velocity command to stop the robot:
 ```bash
