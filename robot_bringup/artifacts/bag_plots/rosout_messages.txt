@@ -1,0 +1,17 @@
+     0.000 s  [INFO]  rosbag2_recorder: Press SPACE for pausing/resuming
+     0.000 s  [INFO]  rosbag2_recorder: Event publisher thread: Started
+     0.000 s  [INFO]  rosbag2_recorder: Starting recording to '/home/pi/robot_ws/src/robot_bringup/bags/robot_run'
+     0.000 s  [INFO]  rosbag2_recorder: Subscribed to topic '/rosout'
+     0.000 s  [INFO]  rosbag2_recorder: Listening for topics...
+     0.000 s  [INFO]  rosbag2_recorder: Recording...
+     0.000 s  [INFO]  rosbag2_recorder: Topics discovery started.
+     1.204 s  [INFO]  rosbag2_recorder: Subscribed to topic '/diagnostics'
+     1.222 s  [INFO]  rosbag2_recorder: Subscribed to topic '/odom'
+     1.232 s  [INFO]  rosbag2_recorder: Subscribed to topic '/tf'
+     1.310 s  [INFO]  rosbag2_recorder: Subscribed to topic '/tf_static'
+     1.323 s  [INFO]  rosbag2_recorder: Subscribed to topic '/robot_description'
+     2.331 s  [INFO]  rosbag2_recorder: Subscribed to topic '/imu/data'
+     2.992 s  [INFO]  rosbag2_recorder: Subscribed to topic '/odom/unfiltered'
+    18.495 s  [INFO]  rosbag2_recorder: Subscribed to topic '/cmd_vel'
+    18.495 s  [INFO]  rosbag2_recorder: All requested topics are subscribed. Stopping discovery...
+    18.495 s  [INFO]  rosbag2_recorder: Topics discovery stopped.
