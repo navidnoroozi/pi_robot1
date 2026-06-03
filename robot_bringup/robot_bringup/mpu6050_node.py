@@ -73,6 +73,8 @@ class MPU6050Node(Node):
         # ── Initialise MPU6050 ───────────────────────────────────────────────
         self.get_logger().info('Initialising MPU6050...')
         self.gyro_z_bias = 0.0   # will be set during init
+        self._gz_filtered = 0.0  # For low-pass filtering of gyro Z to reduce noise in EKF integration
+        self._alpha = 0.15        # low-pass filter coefficient for gyro Z
         self._init_mpu6050()
 
         # ── Publisher (BEST_EFFORT matches EKF subscription) ─────────────────
@@ -169,7 +171,9 @@ class MPU6050Node(Node):
         # Angular velocity: raw / scale → deg/s → rad/s
         gx = math.radians(gx_raw / GYRO_SCALE)
         gy = math.radians(gy_raw / GYRO_SCALE)
-        gz = math.radians(gz_raw / GYRO_SCALE) - self.gyro_z_bias  # Subtract Z bias here for EKF integration
+        gz_raw_si = math.radians(gz_raw / GYRO_SCALE) - self.gyro_z_bias
+        self._gz_filtered = self._alpha * gz_raw_si + (1 - self._alpha) * self._gz_filtered
+        gz = self._gz_filtered
 
         # ── Build Imu message ─────────────────────────────────────────────
         msg = Imu()
