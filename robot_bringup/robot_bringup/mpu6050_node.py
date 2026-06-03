@@ -169,7 +169,7 @@ class MPU6050Node(Node):
         # Angular velocity: raw / scale → deg/s → rad/s
         gx = math.radians(gx_raw / GYRO_SCALE)
         gy = math.radians(gy_raw / GYRO_SCALE)
-        gz = math.radians(gz_raw / GYRO_SCALE)
+        gz = math.radians(gz_raw / GYRO_SCALE) - self.gyro_z_bias  # Subtract Z bias here for EKF integration
 
         # ── Build Imu message ─────────────────────────────────────────────
         msg = Imu()

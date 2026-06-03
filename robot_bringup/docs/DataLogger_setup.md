@@ -19,7 +19,7 @@ Here is a summary of the logs recording:
 ## Terminal 2 on RPi4: start recording
 1. For repeatable tests, first remove the old bag:
 ```bash
-rm -rf /tmp/robot_run   # assuming the old data are stored under /tmp/robot_run
+rm -r /home/pi/robot_ws/src/robot_bringup/bags/robot_run   # assuming the old data are stored under /home/pi/robot_ws/src/robot_bringup/bags/robot_run
 ```
 2. Record the important topics:
 ```bash
@@ -41,7 +41,7 @@ In **Jazzy**, the result became:
 /tmp/robot_run/
 ├── metadata.yaml
 └── robot_run_0.mcap
-```
+```cd ../../..
 
 ## Offline Plotting: Run plot_bag.py on the RPi4
 Run `plot_bag.py` on the RPi4, not on the Ubuntu VM, because the bag is physically stored on the RPi4 under:
