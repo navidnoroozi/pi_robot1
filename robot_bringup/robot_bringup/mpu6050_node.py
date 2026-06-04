@@ -74,7 +74,7 @@ class MPU6050Node(Node):
         self.get_logger().info('Initialising MPU6050...')
         self.gyro_z_bias = 0.0   # will be set during init
         self._gz_filtered = 0.0  # For low-pass filtering of gyro Z to reduce noise in EKF integration
-        self._alpha = 0.5        # low-pass filter coefficient for gyro Z
+        self._alpha = 1.0        # low-pass filter coefficient for gyro Z
         self._init_mpu6050()
 
         # ── Publisher (BEST_EFFORT matches EKF subscription) ─────────────────
