@@ -205,12 +205,12 @@ class SerialBridgeNode(Node):
         # self.x += d_centre * math.cos(theta_mid)
         # self.y += d_centre * math.sin(theta_mid)
         # self.theta += d_theta
-        
-        self.x += d_centre * math.cos(self.theta)
-        self.y += d_centre * math.sin(self.theta)
+
         self.theta += d_theta
         # Normalise angle to [-pi, pi]
         self.theta = math.atan2(math.sin(self.theta), math.cos(self.theta))
+        self.x += d_centre * math.cos(self.theta)
+        self.y += d_centre * math.sin(self.theta)
 
         v_linear = d_centre / dt_s
         v_angular = d_theta / dt_s
